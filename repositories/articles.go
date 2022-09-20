@@ -7,7 +7,7 @@ import (
 )
 
 
-func InsertArtcile(db *sql.DB, article models.Article) (models.Article, error) {
+func InsertArticle(db *sql.DB, article models.Article) (models.Article, error) {
   const sqlStr = `
     insert into articles (title, contents, username, nice, created_at) values
     (?,?,?,0,now());
@@ -33,7 +33,7 @@ func SelectArticleList(db *sql.DB, page int) ([]models.Article, error) {
     from articles
     limit ? offset ?;
   `
-  
+  articleNumPerPage := 1
   rows, err := db.Query(sqlStr, articleNumPerPage, ((page - 1) * articleNumPerPage))
   if err != nil {
     return nil, err
@@ -58,7 +58,7 @@ func SelectArticleDetail(db *sql.DB, articleID int) (models.Article, error) {
   var article models.Article 
   var createdTime sql.NullTime
   row := db.QueryRow(sqlStr, articleID)
-  err := row.Scan(&article.Title, &article.Contents, &article.UserName, &article.NiceNum, &createdTime)
+  err := row.Scan(&article.ID, &article.Title, &article.Contents, &article.UserName, &article.NiceNum, &createdTime)
   if err != nil {
     return models.Article{}, err
   }
